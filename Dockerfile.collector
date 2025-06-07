@@ -1,0 +1,11 @@
+# Use the official OpenTelemetry Collector base image
+FROM otel/opentelemetry-collector-contrib:latest
+
+# Copy the custom configuration file into the collector's config directory
+COPY otel-collector-config.yaml /etc/otelcol-contrib/config.yaml
+
+# Expose the OTLP gRPC and HTTP ports
+EXPOSE 4317 4318
+
+# Command to run the collector with our custom configuration
+CMD ["--config=/etc/otelcol-contrib/config.yaml"]
