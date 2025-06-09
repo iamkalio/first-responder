@@ -1,10 +1,12 @@
 /*app.js*/
 const express = require('express');
-const { trace } = require('@opentelemetry/api');
+const { trace, metrics } = require('@opentelemetry/api');
 const { rollTheDice } = require('./dice.js');
 
 
 const tracer = trace.getTracer('dice-server', '0.1.0');
+const meter = metrics.getMeter('dice-server', '0.1.0');
+
 
 
 const PORT = parseInt(process.env.PORT || '8080');
