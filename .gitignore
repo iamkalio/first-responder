@@ -3,3 +3,5 @@ __pycache__/
 .env
 telemetry_data.jsonl
 venv/
+node_modules
+package-lock.json

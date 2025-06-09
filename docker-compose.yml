@@ -1,0 +1,29 @@
+services:
+  otel-collector:
+    build:
+      context: .
+      dockerfile: Dockerfile.collector
+    ports:
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+    volumes:
+      - ./telemetry_data:/app/telemetry_data # Mount the file for host access
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  python-app:
+    build: ./application
+    environment:
+      # OTLP endpoint for the collector (service name as hostname)
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+      OTEL_RESOURCE_ATTRIBUTES: service.name=python-file-app,deployment.environment=development
+    depends_on:
+      - otel-collector
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
