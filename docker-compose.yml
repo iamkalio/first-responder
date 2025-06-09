@@ -1,27 +1,34 @@
 services:
   otel-collector:
+    # Build context points to the current directory where Dockerfile.collector is located
     build:
       context: .
       dockerfile: Dockerfile.collector
     ports:
-      - "4317:4317" # OTLP gRPC
-      - "4318:4318" # OTLP HTTP
+      - "4317:4317" # OTLP gRPC endpoint
+      - "4318:4318" # OTLP HTTP endpoint (Node.js app will use this)
     volumes:
-      - ./telemetry_data:/app/telemetry_data # Mount the file for host access
+      # Mount a specific file for the collector to write telemetry data to.
+      # Ensure 'telemetry_data.jsonl' does not exist as a directory on your host.
+      - ./telemetry_output:/app/telemetry_output
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "5"
 
-  python-app:
+  application:
+    # Build context points to the 'my-node-dice-app' folder
     build: ./application
+    ports:
+      - "8080:8080" # Map Node.js app's port 8080 to host's port 8080
     environment:
-      # OTLP endpoint for the collector (service name as hostname)
+      # OTLP endpoint for the collector. 'otel-collector' is the service name in the Docker network.
       OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
-      OTEL_RESOURCE_ATTRIBUTES: service.name=python-file-app,deployment.environment=development
+      # Resource attributes for your Node.js service
+      OTEL_RESOURCE_ATTRIBUTES: service.name=node-dice-app,deployment.environment=development
     depends_on:
-      - otel-collector
+      - otel-collector # Ensures the collector starts before the Node.js app
     logging:
       driver: "json-file"
       options:

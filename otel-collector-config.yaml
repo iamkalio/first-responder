@@ -6,7 +6,7 @@ receivers:
 
 exporters:
   file:
-    path: /app/telemetry_data.jsonl # Path inside the collector container
+    path: /app/telemetry_output/telemetry_data.jsonl # Path inside the collector container
 
 processors:
   batch:
@@ -25,10 +25,6 @@ service:
       processors: [batch]
       exporters: [file]
     metrics:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [file]
-    logs:
       receivers: [otlp]
       processors: [batch]
       exporters: [file]

@@ -1,16 +1,22 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim-buster
+# Use a recommended Node.js Long Term Support (LTS) version
+FROM node:18-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Install any needed packages specified in requirements.txt
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy package.json and package-lock.json to leverage Docker cache
+# If package*.json doesn't change, 'npm install' layer can be reused
+COPY package*.json ./
 
-# Copy the rest of the application code into the container
+# Install application dependencies
+RUN npm install
+
+# Copy the rest of your application code
 COPY . .
-EXPOSE 5000
 
-# Command to run the application
-CMD ["python", "app.py"]
+# Expose the port your Express app listens on
+EXPOSE 8080
+
+# Command to run your application.
+# It uses the 'start' script from package.json, which loads instrumentation.js first.
+CMD [ "npm", "start" ]

@@ -1,4 +1,13 @@
 /*instrumentation.js*/
+const {
+    getNodeAutoInstrumentations,
+} = require('@opentelemetry/auto-instrumentations-node');
+const {
+    OTLPTraceExporter,
+} = require('@opentelemetry/exporter-trace-otlp-proto');
+const {
+    OTLPMetricExporter,
+} = require('@opentelemetry/exporter-metrics-otlp-proto');
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { ConsoleSpanExporter } = require('@opentelemetry/sdk-trace-node');
 const {
@@ -16,10 +25,11 @@ const sdk = new NodeSDK({
         [ATTR_SERVICE_NAME]: 'dice-server',
         [ATTR_SERVICE_VERSION]: '0.1.0',
     }),
-    traceExporter: new ConsoleSpanExporter(),
+    traceExporter: new OTLPTraceExporter(),
     metricReader: new PeriodicExportingMetricReader({
-        exporter: new ConsoleMetricExporter(),
+        exporter: new OTLPMetricExporter(),
     }),
+    instrumentations: [getNodeAutoInstrumentations()],
 });
 
 sdk.start();
