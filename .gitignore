@@ -5,3 +5,5 @@ telemetry_data.jsonl
 venv/
 node_modules
 package-lock.json
+telemetry_output
+.DS_Store
