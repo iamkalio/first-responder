@@ -14,7 +14,7 @@ exporters:
 
 processors:
   batch:
-    send_batch_size: 1 # TEMPORARY: Flush after every 1 item for debugging
+    send_batch_size: 100
     timeout: 1s
   resource:
     attributes:
