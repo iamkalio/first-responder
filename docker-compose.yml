@@ -1,15 +1,12 @@
 services:
   otel-collector:
-    # Build context points to the current directory where Dockerfile.collector is located
     build:
       context: .
       dockerfile: Dockerfile.collector
     ports:
-      - "4317:4317" # OTLP gRPC endpoint
-      - "4318:4318" # OTLP HTTP endpoint (Node.js app will use this)
+      - "4317:4317"
+      - "4318:4318"
     volumes:
-      # Mount a specific file for the collector to write telemetry data to.
-      # Ensure 'telemetry_data.jsonl' does not exist as a directory on your host.
       - ./telemetry_output:/app/telemetry_output
     logging:
       driver: "json-file"
@@ -18,7 +15,6 @@ services:
         max-file: "5"
 
   application:
-    # Build context points to the 'my-node-dice-app' folder
     build: ./application
     ports:
       - "8080:8080" # Map Node.js app's port 8080 to host's port 8080
