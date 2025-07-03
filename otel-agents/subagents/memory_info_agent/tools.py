@@ -6,7 +6,6 @@ This module provides a tool for gathering memory information.
 
 import time
 from typing import Any, Dict
-
 import psutil
 
 
